@@ -8,7 +8,7 @@
   npm install --save three
   ```
 
-## Render website
+## Rendering website
   ```bash
   cd 3D-XR_Visualization
   npx serve .

@@ -503,7 +503,7 @@
         }
         cylinderMesh.material.needsUpdate = true;
     })
-    const brickTexture = new THREE.TextureLoader().load('brick.jpeg');
+    const brickTexture = new THREE.TextureLoader().load('./Pw2_Ex4/brick.jpeg');
     phongMaterialFolder.add(phongSettings, "map", ["none", "brick"]).onChange(value => {
         if (value == "none") {
             cylinderMesh.material.map = null;

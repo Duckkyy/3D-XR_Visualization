@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time 3D Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 1));
+      color: #fff;
+      height: 100%;
+    }
+
+    header {
+      color: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    section {
+      padding: 20px;
+    }
+
+    h2 {
+      margin-bottom: 0px;
+    }
+
+    .block {
+      width: 200px;
+      height: 200px;
+      border: None;
+      margin: 30px;
+      display: inline-block;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+    .block video {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .block-title {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 3px 5px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <header style="text-align: center">
+    <h1>Real-time 3D Visualization</h1>
+    <!-- <p>Last Modified: <span id="lastModified"></span></p> -->
+  </header>
+  <section id="practicalWork1">
+    <h2>Practical Work #1</h2>
+
+    <div class="block" onclick="window.location.href='Pw1_Ex1/index.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_1/pw1_1.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.1</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Pw1_Ex2/index.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_1/pw1_2.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.2</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Pw1_Ex3/index.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_1/pw1_3.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.3</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Pw1_Ex4/index.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_1/pw1_4.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.4</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Pw1_Ex5/index.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_1/pw1_5.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.5</div>
+    </div>
+
+  </section>
+  <section id="practicalWork2">
+    <h2>Practical Work #2</h2>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex1.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_1.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.1</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex2.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_2.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.2</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex3.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_3.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.3</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex4.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_4.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.4</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex5.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_5.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.5</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex6.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_6.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.6</div>
+    </div>
+
+    <div class="block" onclick="window.location.href='Three.js/practical_work_2/PW2_ex7.html'">
+      <video autoplay muted loop>
+        <source src="Three.js/practical_work_2/pw2_7.mov" type="video/mp4">
+      </video>
+      <div class="block-title">Ex.7</div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('lastModified').textContent = document.lastModified;
+  </script>
+</body>
+
+</html>

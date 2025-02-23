@@ -1,0 +1,431 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import {VRButton} from 'three/addons/webxr/VRButton.js';
+
+var scene = new THREE.Scene();
+
+const light1 = new THREE.AmbientLight(0xf0f0f0, 3);
+light1.position.set(15, 15, 15);
+const light = new THREE.SpotLight(0xffffff, 4.5);
+light.position.set(0, 1500, 200);
+light.angle = Math.PI * 0.2;
+light.decay = 0;
+light.castShadow = true;
+light.shadow.camera.near = 200;
+light.shadow.camera.far = 2000;
+light.shadow.bias = - 0.000222;
+light.shadow.mapSize.width = 1024;
+light.shadow.mapSize.height = 1024;
+scene.add(light, light1);
+
+
+var aspect = window.innerWidth / window.innerHeight;
+var camera = new THREE.PerspectiveCamera(
+    75,
+    aspect,
+    0.1,
+    1000
+);
+camera.position.set(-100, 50, 150);
+
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.xr.enabled = true;
+document.body.appendChild(VRButton.createButton(renderer));
+document.body.appendChild(renderer.domElement);
+
+
+const controls = new OrbitControls(
+    camera,
+    renderer.domElement
+);
+
+// AXES helper
+const axesHelper = new THREE.AxesHelper(100);
+// scene.add(axesHelper);
+
+// GUI
+const gui = new GUI();
+
+function addGUI(name, mesh) {
+    const folder = gui.addFolder(name);
+    folder.add(mesh.position, "x", -80, 80, 0.5)
+    folder.add(mesh.position, "y", -80, 80, 0.5)
+    folder.add(mesh.position, "z", -80, 80, 0.5)
+    const settings = {
+        rotationX: 0,
+        rotationY: 0,
+        rotationZ: 0
+    };
+    folder.add(settings, 'rotationX', -Math.PI * 2, Math.PI * 2).name('Rotate X').onChange(value => {mesh.rotation.x = value;});
+    folder.add(settings, 'rotationY', -Math.PI * 2, Math.PI * 2).name('Rotate Y').onChange(value => {mesh.rotation.y = value;});
+    folder.add(settings, 'rotationZ', -Math.PI * 2, Math.PI * 2).name('Rotate Z').onChange(value => {mesh.rotation.z = value;});
+    folder.close()
+}
+
+// Body
+const body = {
+    geometry: new THREE.BoxGeometry(10, 90, 10),
+    color: 0xCCCCCC,
+    x: 0,
+    y: 0,
+    z: 0,
+};
+const bodyMesh = createMesh(body.geometry, body.color, body.x, body.y, body.z, body.rotationX, body.rotationY, body.rotationZ);
+scene.add(bodyMesh);
+
+const body1 = {
+    geometry: new THREE.CylinderGeometry(25, 8, 35, 32),
+    color: 0x222222,
+    x: 0,
+    y: 0,
+    z: -10,
+    
+    rotationX: 0.25
+}
+const body1Mesh = createMesh(body1.geometry, body1.color, body1.x, body1.y, body1.z, body1.rotationX, body1.rotationY, body1.rotationZ);
+bodyMesh.add(body1Mesh)
+
+const thetaStartBody2 = Math.PI * 0.2;
+const thetaLengthBody2 = Math.PI * 1.6;
+const body2 = {
+    geometry: new THREE.CylinderGeometry(9, 25, 10, 32, 2, true, thetaStartBody2, thetaLengthBody2),
+    color: 0x222222,
+    x: 0,
+    y: 23,
+    z: 0,
+}
+const body2Mesh = createMesh(body2.geometry, body2.color, body2.x, body2.y, body2.z, body2.rotationX, body2.rotationY, body2.rotationZ);
+body1Mesh.add(body2Mesh)
+// body1Mesh.add(axesHelper)
+
+const loader = new THREE.TextureLoader();
+const texture = loader.load("logo.jpeg");
+
+// Left Arm
+const upperLeftArmJoint = {
+    geometry: new THREE.CylinderGeometry(7, 7, 2, 8), // radiusTop=4, radiusBottom=4, height=2, radialSegments=7
+    color: 0xADD8E6,
+    x: 0,
+    y: 23,
+    z: 0,
+}
+let upperLeftArmJointMesh = createMesh(upperLeftArmJoint.geometry, upperLeftArmJoint.color, upperLeftArmJoint.x, upperLeftArmJoint.y, upperLeftArmJoint.z, upperLeftArmJoint.rotationX, upperLeftArmJoint.rotationY, upperLeftArmJoint.rotationZ);
+addGUI("upperLeftArmJoint", upperLeftArmJointMesh)
+
+const upperLeftArm = {
+    geometry: new THREE.CylinderGeometry(7, 7, 20, 12),
+    color: 0xCCCCCC,
+    x: 0,
+    y: 11,
+    z: 0,
+}
+let upperLeftArmMesh = createMesh(upperLeftArm.geometry, upperLeftArm.color, upperLeftArm.x, upperLeftArm.y, upperLeftArm.z, upperLeftArm.rotationX, upperLeftArm.rotationY, upperLeftArm.rotationZ);
+upperLeftArmJointMesh.add(upperLeftArmMesh)
+upperLeftArmMesh.material.map = texture;
+texture.rotation = Math.PI/2 ;
+texture.offset.set(0.2, 0.8);
+
+const upperLeftArmGroup = new THREE.Group
+upperLeftArmGroup.add(upperLeftArmJointMesh)
+upperLeftArmGroup.rotation.x = 0.25 * Math.PI
+upperLeftArmGroup.rotation.z = 0.25 * Math.PI
+scene.add(upperLeftArmGroup)
+
+const middleLeftArmJoint = {
+    geometry: new THREE.IcosahedronGeometry(5, 5),
+    color: 0x1b1c17,
+    x: -33,
+    y: 23,
+    z: 23,
+};
+let middleLeftArmJointMesh = createMesh(middleLeftArmJoint.geometry, middleLeftArmJoint.color, middleLeftArmJoint.x, middleLeftArmJoint.y, middleLeftArmJoint.z, middleLeftArmJoint.rotationX, middleLeftArmJoint.rotationY, middleLeftArmJoint.rotationZ);
+addGUI("middleLeftArmJoint", middleLeftArmJointMesh)
+
+const middleLeftArm = {
+    geometry: new THREE.CylinderGeometry(7, 4, 30, 12),
+    color: 0xCCCCCC,
+    x: -5,
+    y: 1,
+    z: 15,
+    rotationX: 90 / 180,
+    rotationY: 1,
+    rotationZ: 345 / 180,
+}
+let middleLeftArmMesh = createMesh(middleLeftArm.geometry, middleLeftArm.color, middleLeftArm.x, middleLeftArm.y, middleLeftArm.z, middleLeftArm.rotationX, middleLeftArm.rotationY, middleLeftArm.rotationZ);
+middleLeftArmJointMesh.add(middleLeftArmMesh)
+addGUI("middleLeftArm", middleLeftArmMesh)
+middleLeftArmMesh.material.map = texture;
+texture.rotation = Math.PI/2 ;
+texture.offset.set(0.2, 0.8);
+
+const middleLeftArmGroup = new THREE.Group
+middleLeftArmGroup.add(middleLeftArmJointMesh)
+scene.add(middleLeftArmGroup)
+
+const lowerLeftArmJoint = {
+    geometry: new THREE.IcosahedronGeometry(6, 5),
+    color: 0x1b1c17,
+    x: 0,
+    y: 20,
+    z: 0,
+};
+let lowerLeftArmJointMesh = createMesh(lowerLeftArmJoint.geometry, lowerLeftArmJoint.color, lowerLeftArmJoint.x, lowerLeftArmJoint.y, lowerLeftArmJoint.z, lowerLeftArmJoint.rotationX, lowerLeftArmJoint.rotationY, lowerLeftArmJoint.rotationZ);
+addGUI("lowerLeftArmJoint", lowerLeftArmJointMesh)
+
+const lowerLeftArm = {
+    geometry: new THREE.CylinderGeometry(5, 5, 30, 12),
+    color: 0xCCCCCC,
+    x: -10,
+    y: 2,
+    z: -13,
+    rotationX: 90 / 180,
+    rotationZ: 145 / 180,
+}
+let lowerLeftArmMesh = createMesh(lowerLeftArm.geometry, lowerLeftArm.color, lowerLeftArm.x, lowerLeftArm.y, lowerLeftArm.z, lowerLeftArm.rotationX, lowerLeftArm.rotationY, lowerLeftArm.rotationZ);
+lowerLeftArmJointMesh.add(lowerLeftArmMesh)
+addGUI("lowerLeftArm", lowerLeftArmMesh)
+lowerLeftArmMesh.material.map = texture;
+texture.rotation = Math.PI/2 ;
+texture.offset.set(0.2, 0.8);
+
+middleLeftArmMesh.add(lowerLeftArmJointMesh)
+
+const leftHandJoint = {
+    geometry: new THREE.IcosahedronGeometry(5, 5),
+    color: 0x1b1c17,
+    x: 0,
+    y: 19,
+    z: 0,
+};
+let leftHandJointMesh = createMesh(leftHandJoint.geometry, leftHandJoint.color, leftHandJoint.x, leftHandJoint.y, leftHandJoint.z, leftHandJoint.rotationX, leftHandJoint.rotationY, leftHandJoint.rotationZ);
+lowerLeftArmMesh.add(leftHandJointMesh)
+addGUI("leftHandJoint", leftHandJointMesh)
+
+const leftHand = {
+    geometry: new THREE.SphereGeometry(5, 4, 1, Math.PI * 2.2, Math.PI * 1.6, Math.PI * 0.3, Math.PI * 0.3),
+    color: 0xCCCCCC,
+    x: 2,
+    y: 8,
+    z: 0,
+    rotationZ: -120 / 180,
+};
+let HandMesh = createMesh(leftHand.geometry, leftHand.color, leftHand.x, leftHand.y, leftHand.z, leftHand.rotationX, leftHand.rotationY, leftHand.rotationZ);
+leftHandJointMesh.add(HandMesh)
+addGUI("leftHand", HandMesh)
+
+// Right Hand
+const upperRightArmJoint = {
+    geometry: new THREE.CylinderGeometry(7, 7, 2, 8), // radiusTop=4, radiusBottom=4, height=2, radialSegments=7
+    color: 0xADD8E6,
+    x: 0,
+    y: 23,
+    z: 0,
+}
+let upperRightArmJointMesh = createMesh(upperRightArmJoint.geometry, upperRightArmJoint.color, upperRightArmJoint.x, upperRightArmJoint.y, upperRightArmJoint.z, upperRightArmJoint.rotationX, upperRightArmJoint.rotationY, upperRightArmJoint.rotationZ);
+addGUI("upperRightArmJointMesh", upperRightArmJointMesh)
+
+const upperRightArm = {
+    geometry: new THREE.CylinderGeometry(7, 7, 20, 12),
+    color: 0xCCCCCC,
+    x: 0,
+    y: 11,
+    z: 0,
+}
+let upperRightArmMesh = createMesh(upperRightArm.geometry, upperRightArm.color, upperRightArm.x, upperRightArm.y, upperRightArm.z, upperRightArm.rotationX, upperRightArm.rotationY, upperRightArm.rotationZ);
+upperRightArmJointMesh.add(upperRightArmMesh)
+addGUI("upperRightArm", upperRightArmMesh)
+upperRightArmMesh.material.map = texture;
+texture.rotation = Math.PI/2 ;
+texture.offset.set(0.2, 0.8);
+
+const upperRightArmGroup = new THREE.Group
+upperRightArmGroup.add(upperRightArmJointMesh)
+upperRightArmGroup.rotation.x = 0.25 * Math.PI
+upperRightArmGroup.rotation.z = -0.25 * Math.PI
+scene.add(upperRightArmGroup)
+
+const middleRightArmJoint = {
+    geometry: new THREE.IcosahedronGeometry(5, 5),
+    color: 0x1b1c17,
+    x: 0,
+    y: 14,
+    z: 0,
+};
+let middleRightArmJointMesh = createMesh(middleRightArmJoint.geometry, middleRightArmJoint.color, middleRightArmJoint.x, middleRightArmJoint.y, middleRightArmJoint.z, middleRightArmJoint.rotationX, middleRightArmJoint.rotationY, middleRightArmJoint.rotationZ);
+upperRightArmMesh.add(middleRightArmJointMesh)
+addGUI("middleRightArmJoint", middleRightArmJointMesh)
+
+const middleRightArm = {
+    geometry: new THREE.CylinderGeometry(7, 4, 25, 12),
+    color: 0xCCCCCC,
+    x: -4,
+    y: 11,
+    z: 10,
+    rotationX: 45 / 180,
+    rotationZ: 15 / 180,
+}
+let middleRightArmMesh = createMesh(middleRightArm.geometry, middleRightArm.color, middleRightArm.x, middleRightArm.y, middleRightArm.z, middleRightArm.rotationX, middleRightArm.rotationY, middleRightArm.rotationZ);
+middleRightArmJointMesh.add(middleRightArmMesh)
+addGUI("middleRightArm", middleRightArmMesh)
+middleRightArmMesh.material.map = texture;
+texture.rotation = Math.PI/2 ;
+texture.offset.set(0.2, 0.8);
+
+const lowerRightArmJoint = {
+    geometry: new THREE.IcosahedronGeometry(6, 5),
+    color: 0x1b1c17,
+    x: 0,
+    y: 17,
+    z: 0,
+};
+let lowerRightArmJointMesh = createMesh(lowerRightArmJoint.geometry, lowerRightArmJoint.color, lowerRightArmJoint.x, lowerRightArmJoint.y, lowerRightArmJoint.z, lowerRightArmJoint.rotationX, lowerRightArmJoint.rotationY, lowerRightArmJoint.rotationZ);
+middleRightArmMesh.add(lowerRightArmJointMesh)
+addGUI("lowerRightArmJoint", lowerRightArmJointMesh)
+
+const lowerRightArm = {
+    geometry: new THREE.CylinderGeometry(5, 5, 30, 12),
+    color: 0xCCCCCC,
+    x: -1,
+    y: 2,
+    z: 16,
+    rotationY: 90 / 180,
+    rotationZ: 90 / 180,
+}
+let lowerRightArmMesh = createMesh(lowerRightArm.geometry, lowerRightArm.color, lowerRightArm.x, lowerRightArm.y, lowerRightArm.z, lowerRightArm.rotationX, lowerRightArm.rotationY, lowerRightArm.rotationZ);
+lowerRightArmJointMesh.add(lowerRightArmMesh)
+addGUI("lowerRightArm", lowerRightArmMesh)
+lowerRightArmMesh.material.map = texture;
+texture.rotation = Math.PI/2 ;
+texture.offset.set(0.2, 0.8);
+
+const rightHandJoint = {
+    geometry: new THREE.IcosahedronGeometry(5, 5),
+    color: 0x1b1c17,
+    x: 0,
+    y: 19,
+    z: 0,
+};
+let rightHandJointMesh = createMesh(rightHandJoint.geometry, rightHandJoint.color, rightHandJoint.x, rightHandJoint.y, rightHandJoint.z, rightHandJoint.rotationX, rightHandJoint.rotationY, rightHandJoint.rotationZ);
+lowerRightArmMesh.add(rightHandJointMesh)
+addGUI("rightHandJoint", rightHandJointMesh)
+
+const rightHand = {
+    geometry: new THREE.SphereGeometry(5, 4, 1, Math.PI * 2.2, Math.PI * 1.6, Math.PI * 0.3, Math.PI * 0.3),
+    color: 0xCCCCCC,
+    x: -5,
+    y: 6,
+    z: -2,
+    rotationZ: -45 / 180,
+};
+let rightHandMesh = createMesh(rightHand.geometry, rightHand.color, rightHand.x, rightHand.y, rightHand.z, rightHand.rotationX, rightHand.rotationY, rightHand.rotationZ);
+rightHandJointMesh.add(rightHandMesh)
+addGUI("rightHand", rightHandMesh)
+
+function createMesh(geometry, color, x, y, z, rotationX, rotationY, rotationZ) {
+    const material = new THREE.MeshStandardMaterial({
+        side: THREE.DoubleSide,
+        color: color,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    if (rotationX) {
+        mesh.rotation.x = Math.PI * rotationX;
+    }
+
+    if (rotationY) {
+        mesh.rotation.y = Math.PI * rotationY;
+    }
+
+    if (rotationZ) {
+        mesh.rotation.z = Math.PI * rotationZ;
+    }
+    return mesh;
+}
+
+function resizeRendererToDisplaySize(renderer) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+        renderer.setSize(width, height, false);
+    }
+    return needResize;
+}
+
+const xOffset = 0;
+const zOffset = 0;
+const spacing = 10;
+const gridRows = 50;
+
+for (let x = -gridRows / 2; x < gridRows; x++) {
+    for (let z = -gridRows / 2; z < gridRows; z++) {
+        createMarks(xOffset + x * spacing, zOffset + z * spacing, spacing / 3, xOffset, zOffset);
+    }
+}
+
+function createMarks(x, z, size, xOffset, zOffset) {
+    const opacity = calculateOpacity(x, z, xOffset, zOffset);
+    const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: opacity
+    });
+
+    createCross(x - size / 2, x + size / 2, z, -35, z, lineMaterial);
+    createCross(x, x, z - size / 2, -35, z + size / 2, lineMaterial);
+}
+
+function createCross(startX, endX, startZ, y, endZ, material) {
+    const points = [
+        new THREE.Vector3(startX, y, startZ),
+        new THREE.Vector3(endX, y, endZ)
+    ];
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(lineGeometry, material);
+    scene.add(line);
+}
+
+function calculateOpacity(x, z, xOffset, zOffset) {
+    const distance = Math.sqrt((x - xOffset) ** 2 + (z - zOffset) ** 2);
+    return 1 - distance / 150;
+}
+
+function render(time) {
+    if (resizeRendererToDisplaySize(renderer)) {
+        const canvas = renderer.domElement;
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+    }
+    time *= 0.001;
+    upperLeftArmJointMesh.rotation.y = Math.PI / 4 * (Math.cos(time));
+    middleLeftArmJointMesh.rotation.y = Math.PI / 4 * (Math.cos(time));
+    lowerLeftArmJointMesh.rotation.y = Math.PI / 4 * (Math.cos(time));
+
+    upperRightArmJointMesh.rotation.y = Math.PI / -8 * (Math.cos(time));
+    middleRightArmJointMesh.rotation.y = Math.PI / -8 * (Math.cos(time));
+    lowerRightArmJointMesh.rotation.y = Math.PI / -8 * (Math.cos(time));
+
+    controls.update();
+    renderer.render(scene, camera);
+
+    // requestAnimationFrame(render);
+}
+
+// function render() {
+//     if (resizeRendererToDisplaySize(renderer)) {
+//         const canvas = renderer.domElement;
+//         camera.aspect = canvas.clientWidth / canvas.clientHeight;
+//         camera.updateProjectionMatrix();
+//     }
+
+//     controls.update();
+//     renderer.render(scene, camera);
+
+//     requestAnimationFrame(render);
+// }
+
+// requestAnimationFrame(render);
+renderer.setAnimationLoop(render);

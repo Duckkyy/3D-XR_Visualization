@@ -10,5 +10,6 @@
 
 ## Render website
   ```bash
+  cd 3D-XR_Visualization
   npx serve .
   ```

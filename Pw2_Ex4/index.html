@@ -487,7 +487,7 @@
     });
     const envMaps = ["none", "reflection", "refraction"]
     const textureLoader = new THREE.TextureLoader();
-    let phongMap = textureLoader.load('brick.jpeg');
+    let phongMap = textureLoader.load('./Pw2_Ex4/brick.jpeg');
     phongMap.colorSpace = THREE.SRGBColorSpace;
     phongMaterialFolder.add(phongSettings, "envMaps", envMaps).onChange(value => {
         if (value == "none") {
@@ -513,7 +513,7 @@
         }
         cylinderMesh.material.needsUpdate = true;
     })
-    const fibreTexture = new THREE.TextureLoader().load('fibres.jpg');
+    const fibreTexture = new THREE.TextureLoader().load('./Pw2_Ex4/fibres.jpg');
     phongMaterialFolder.add(phongSettings, 'alphaMap', ['none', 'fibre']).onChange(value => {
         if (value == "none") {
             cylinderMesh.material.alphaMap = null;
@@ -569,7 +569,7 @@
     lambertMaterialFolder.add(lambertSettings, 'fog').name('fog').onChange((value) => {
         coneMesh.material.fog = value;
     });
-    let lambertMap = textureLoader.load('brick.jpeg');
+    let lambertMap = textureLoader.load('./Pw2_Ex4/brick.jpeg');
     lambertMap.colorSpace = THREE.SRGBColorSpace;
     lambertMaterialFolder.add(lambertSettings, "envMaps", envMaps).onChange(value => {
         if (value == "none") {
@@ -719,7 +719,7 @@
         sphereMesh.material.fog = value;
         sphereMesh.material.needsUpdate = true;
     });
-    let physicalMap = textureLoader.load('brick.jpeg');
+    let physicalMap = textureLoader.load('./Pw2_Ex4/brick.jpeg');
     physicalMap.colorSpace = THREE.SRGBColorSpace;
     physicalMaterialFolder.add(physicalSettings, "envMaps", envMaps).onChange(value => {
         if (value == "none") {
